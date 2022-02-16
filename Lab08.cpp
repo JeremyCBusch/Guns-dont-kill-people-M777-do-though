@@ -10,6 +10,7 @@
  * 5. How long did it take for you to complete the assignment?
  *      ??
  *****************************************************************/
+#define WEEK06
 
 #include <cassert>      // for ASSERT
 #include "uiInteract.h" // for INTERFACE
@@ -126,6 +127,8 @@ double Position::metersFromPixels = 40.0;
 /*********************************
  * Initialize the simulation and set it in motion
  *********************************/
+#ifndef WEEK06
+
 #ifdef _WIN32_X
 #include <windows.h>
 int WINAPI wWinMain(
@@ -155,3 +158,14 @@ int main(int argc, char** argv)
 
    return 0;
 }
+
+#else
+
+int main()
+{
+
+   std::cout << "Hello Jeremy!" << std::endl;
+   return 0;
+}
+
+#endif
