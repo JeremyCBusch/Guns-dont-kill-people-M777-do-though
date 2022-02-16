@@ -159,13 +159,4 @@ int main(int argc, char** argv)
    return 0;
 }
 
-#else
-
-int main()
-{
-
-   std::cout << "Hello Jeremy!" << std::endl;
-   return 0;
-}
-
 #endif
