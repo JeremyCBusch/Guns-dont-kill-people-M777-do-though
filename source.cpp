@@ -37,6 +37,19 @@ const double area = .018842;
  *       
  */
 
+double computeTotalVelocity(double vVelocity, double hVelocity)
+{
+   return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
+}
+
+
+
+double convertDegreesToRadians(double degrees)
+{
+   const double pi = 3.14159265358979323846;
+   return (2 * pi * degrees) / 360;
+}
+
 
 
 double getLinearInterpolation()
@@ -67,11 +80,11 @@ double getSpeedOfSound(double altitude)
       { 30000,	305 },
       { 40000,	324 }
    });
-   //// need to make a map that holds altittude and speed of sound
+   //// need to make a map that holds altitude and speed of sound
    //double speed = 0;
 
    //return speed;
-   return 0.0;
+   return 340.0;
 }
 
 double getGravitationalForce(double altitude)
@@ -92,7 +105,7 @@ double getGravitationalForce(double altitude)
       { 20000, 9.745 },
       { 25000, 9.730 }
    });
-   return 0.0;
+   return -1 * 9.8;
 }
 
 double getAirDensity(double altitude)
@@ -119,7 +132,7 @@ double getAirDensity(double altitude)
       { 70000,	0.0000828 },
       { 80000,	0.0000185 }
    });
-   return 0.0;
+   return 0.8194000;
 }
 
 double getDragCoefficient(double machAndCheese)
@@ -142,7 +155,7 @@ double getDragCoefficient(double machAndCheese)
       { 2.890 , 0.2306 },
       { 5.000 , 0.2656 }
    });
-   return 0.0;
+   return 0.3287;
 }
 
 double getTheMachAndCheese(double currentSpeed, double altitude) // minus the cheese
@@ -161,6 +174,8 @@ double computeAcceleration(double force, double weight, double altitude, double 
    //assert(force > 0.0);
    //assert(weight > 0.0);
    double acceleration = force / weight;
+   //std::cout << getTheForceOfAirResistance(altitude, velocity, area) << std::endl;
+   //std::cout << force << ", " << weight << ", " << gravity << ", " << acceleration << ", " << altitude << ", " << velocity << ", " << area << std::endl;
 
 
    assert(gravity <= 0.0);
@@ -214,13 +229,18 @@ double getTotalXDistanceTraveled(double angle, double velocity)
 {
    double xpos = 0.0;
    double ypos = 0.0;
+
+   double seconds = 0.0;
    
    do 
    {
-      ypos += getYDistanceTraveled(getYVelocity(angle, velocity), getYAcceleration(0, weight, angle, ypos, velocity, area), .5);
-      xpos += getXDistanceTraveled(getXVelocity(angle, velocity), getXAcceleration(0, weight, angle, xpos, velocity, area), .5);
+      ypos += getYDistanceTraveled(getYVelocity(convertDegreesToRadians(angle), velocity), getYAcceleration(0, weight, convertDegreesToRadians(angle), ypos, velocity, area), .5);
+      xpos += getXDistanceTraveled(getXVelocity(convertDegreesToRadians(angle), velocity), getXAcceleration(0, weight, convertDegreesToRadians(angle), xpos, velocity, area), .5);
+      velocity += computeTotalVelocity(getYAcceleration(0, weight, convertDegreesToRadians(angle), ypos, velocity, area) * 0.5, getXAcceleration(0, weight, convertDegreesToRadians(angle), xpos, velocity, area) * 0.5);
+      seconds += 0.5;
+      std::cout << xpos << ", " << ypos << std::endl;
 
-   } while (ypos > 0.0);
+   } while (ypos > 0.0 && seconds < 120.0);
    
 
    /*
@@ -243,18 +263,7 @@ double getTotalXDistanceTraveled(double angle, double velocity)
 
 
 
-double computeTotalVelocity(double vVelocity, double hVelocity)
-{
-   return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
-}
 
-
-
-double convertDegreesToRadians(double degrees)
-{
-   const double pi = 3.14159265358979323846;
-   return (2 * pi * degrees) / 360;
-}
 
 
 

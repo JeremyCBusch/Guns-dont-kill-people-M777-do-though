@@ -1,2 +1,2 @@
 ﻿  source.cpp
-LINK : fatal error LNK1104: cannot open file 'C:\Winter2022\Encapsulation Design\week-7\Guns-dont-kill-people-M777-do-though\packages\nupengl.core.0.1.0.1\build\native\..\..\\build\native\lib\x64\glew32.lib'
+  Lab08.vcxproj -> C:\Users\Jacob\Documents\Winter2022\Encapsulation Design\M777\Guns-dont-kill-people-M777-do-though\x64\Debug\Lab08.exe
