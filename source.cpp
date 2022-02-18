@@ -2,6 +2,8 @@
 #include <cassert>
 #include <cmath>
 #include <map>
+const double weight = 46.7;
+const double area = .018842;
 
 #define DEBUG
 
@@ -90,6 +92,7 @@ double getGravitationalForce(double altitude)
       { 20000, 9.745 },
       { 25000, 9.730 }
    });
+   return 0.0;
 }
 
 double getAirDensity(double altitude)
@@ -116,6 +119,7 @@ double getAirDensity(double altitude)
       { 70000,	0.0000828 },
       { 80000,	0.0000185 }
    });
+   return 0.0;
 }
 
 double getDragCoefficient(double machAndCheese)
@@ -141,6 +145,11 @@ double getDragCoefficient(double machAndCheese)
    return 0.0;
 }
 
+double getTheMachAndCheese(double currentSpeed, double altitude) // minus the cheese
+{
+   return currentSpeed / getSpeedOfSound(altitude);
+}
+
 double getTheForceOfAirResistance(double altitude, double velocity, double area)
 {
    return 0.5 * getDragCoefficient(getTheMachAndCheese(velocity, altitude)) * getAirDensity(altitude) * (velocity * velocity) * area;
@@ -158,6 +167,24 @@ double computeAcceleration(double force, double weight, double altitude, double 
    return gravity + acceleration - (getTheForceOfAirResistance(altitude, velocity, area) / weight);
 }
 
+
+
+double getXVelocity(double angle, double velocity)
+{
+   double xVelocity = 0;
+   // assuming the angle is in radians
+   xVelocity = sin(angle) * velocity;
+   return xVelocity;
+}
+
+double getYVelocity(double angle, double velocity)
+{
+   double yVelocity = 0;
+   // assuming the angle is in radians
+   yVelocity = cos(angle) * velocity;
+   return yVelocity;
+}
+
 double getXAcceleration(double hThrust, double weight, double angle, double altitude, double velocity, double area)
 {
    //need to add drag to this
@@ -173,13 +200,29 @@ double getYAcceleration(double vThrust, double weight, double angle, double alti
 
 }
 
-double getTotalDistanceTraveled()
+double getXDistanceTraveled(double xVelocity, double xAcceleration, double seconds)
 {
-   double xPos = 0.0;
-   while (xPos >= 0.0)
+   return -1 * (xVelocity * seconds + 0.5 * xAcceleration * (seconds * seconds));
+}
+
+double getYDistanceTraveled(double yVelocity, double yAcceleration, double seconds)
+{
+   return yVelocity * seconds + 0.5 * yAcceleration * (seconds * seconds);
+}
+
+double getTotalXDistanceTraveled(double angle, double velocity)
+{
+   double xpos = 0.0;
+   double ypos = 0.0;
+   
+   do 
    {
-      
-   }
+      ypos += getYDistanceTraveled(getYVelocity(angle, velocity), getYAcceleration(0, weight, angle, ypos, velocity, area), .5);
+      xpos += getXDistanceTraveled(getXVelocity(angle, velocity), getXAcceleration(0, weight, angle, xpos, velocity, area), .5);
+
+   } while (ypos > 0.0);
+   
+
    /*
     * loop
     *    increment time .5 sec
@@ -192,35 +235,20 @@ double getTotalDistanceTraveled()
     *    
     */
    //return (position.getY() + getXDistanceTraveled());
-   return 0.0;
+   return xpos;
 }
 
 
  // dimadome 
 
-double getTheMachAndCheese(double currentSpeed, double altitude) // minus the cheese
-{
-   return currentSpeed / getSpeedOfSound(altitude);
-}
+
 
 double computeTotalVelocity(double vVelocity, double hVelocity)
 {
    return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
 }
 
-double getXVelocity(double angle, double velocity)
-{
-   double xVelocity = 0;
-   // assuming the angle is in radians
-   xVelocity = sin(angle) * velocity;
-}
 
-double getYVelocity(double angle, double velocity)
-{
-   double yVelocity = 0;
-   // assuming the angle is in radians
-   yVelocity = cos(angle) * velocity;
-}
 
 double convertDegreesToRadians(double degrees)
 {
@@ -228,15 +256,7 @@ double convertDegreesToRadians(double degrees)
    return (2 * pi * degrees) / 360;
 }
 
-double getXDistanceTraveled(double yVelocity, double yAcceleration, double seconds)
-{
-   return -1 * (yVelocity * seconds + 0.5 * yAcceleration * (seconds * seconds));
-}
 
-double getYDistanceTraveled(double yVelocity, double yAcceleration, double seconds)
-{
-   return yVelocity * seconds + 0.5 * yAcceleration * (seconds * seconds);
-}
 
 #ifdef DEBUG
 void test_getTotalDistanceTraveled()
@@ -266,4 +286,5 @@ int main()
    std::cout << "Hello Jeremy!" << std::endl;
    return 0;
 #endif
+   getTotalXDistanceTraveled(30, 827);
 }
