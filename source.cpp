@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cmath>
 #include <map>
+
 const double weight = 46.7;
 const double area = .018842;
 
@@ -52,7 +53,7 @@ double convertDegreesToRadians(double degrees)
 
 
 
-double getLinearInterpolation()
+double getLinearInterpolation(double value1, double value2, double value3)
 {
    //double interpolation = 0;
 
@@ -63,27 +64,39 @@ double getLinearInterpolation()
 double getSpeedOfSound(double altitude)
 {
    std::map<double, double> soundSpeedTable({
-      { 0,     340 },
-      { 1000,  336 },
-      { 2000,	332 },
-      { 3000,	328 },
-      { 4000,	324 },
-      { 5000,	320 },
-      { 6000,	316 },
-      { 7000,	312 },
-      { 8000,	308 },
-      { 9000,	303 },
-      { 10000,	299 },
-      { 15000,	295 },
-      { 20000,	295 },
-      { 25000,	295 },
-      { 30000,	305 },
-      { 40000,	324 }
+      { 0.0,      340.0 },
+      { 1000.0,   336.0 },
+      { 2000.0,	332.0 },
+      { 3000.0,	328.0 },
+      { 4000.0,	324.0 },
+      { 5000.0,	320.0 },
+      { 6000.0,	316.0 },
+      { 7000.0,	312.0 },
+      { 8000.0,	308.0 },
+      { 9000.0,	303.0 },
+      { 10000.0,	299.0 },
+      { 15000.0,	295.0 },
+      { 20000.0,	295.0 },
+      { 25000.0,	295.0 },
+      { 30000.0,	305.0 },
+      { 40000.0,	324.0 }
    });
-   //// need to make a map that holds altitude and speed of sound
-   //double speed = 0;
+   double keys[] = {0,1000,2000,3000,4000,5000,6000,7000,
+      8000,9000,10000,15000,20000,25000,30000,40000};
+   // need to make a map that holds altitude and speed of sound
+   double prev = 0.0;
+   for (double key : keys)
+   {
+      if (altitude <= key)
+      {
+         return getLinearInterpolation(
+            soundSpeedTable.at(key), soundSpeedTable.at(prev), altitude);
+      }
+      prev = key;
+   }
+   assert(false); // our value is too big
 
-   //return speed;
+
    return 340.0;
 }
 
@@ -105,6 +118,23 @@ double getGravitationalForce(double altitude)
       { 20000, 9.745 },
       { 25000, 9.730 }
    });
+   double keys[] = {0,1000,2000,3000,4000,5000,6000,
+      7000,8000,9000,10000,15000,20000,25000};
+   double prev = 0.0;
+   for (double key : keys)
+   {
+      if (altitude <= key)
+      {
+         return -1 * getLinearInterpolation(
+            gravityForceTable.at(key), gravityForceTable.at(prev), altitude);
+      }
+      prev = key;
+   }
+   assert(false); // our value is too big
+
+
+
+
    return -1 * 9.8;
 }
 
@@ -132,6 +162,22 @@ double getAirDensity(double altitude)
       { 70000,	0.0000828 },
       { 80000,	0.0000185 }
    });
+   double keys[] = {0,1000,2000,3000,4000,5000,6000,
+      7000,8000,9000,10000,15000,20000,25000,30000,
+      40000,50000,60000,70000,80000};
+
+   double prev = 0.0;
+   for (double key : keys)
+   {
+      if (altitude <= key)
+      {
+         return getLinearInterpolation(
+            airDensityTable.at(key), airDensityTable.at(prev), altitude);
+      }
+      prev = key;
+   }
+   assert(false); // our value is too big
+
    return 0.8194000;
 }
 
@@ -155,6 +201,22 @@ double getDragCoefficient(double machAndCheese)
       { 2.890 , 0.2306 },
       { 5.000 , 0.2656 }
    });
+
+   double keys[] = {0.300,0.500,0.700,0.890,0.920,
+      0.960,0.980,1.000,1.020,1.060,1.240,1.530,
+      1.990,2.870,2.890,5.000};
+
+   double prev = 0.0;
+   for (double key : keys)
+   {
+      if (machAndCheese <= key)
+      {
+         return getLinearInterpolation(
+            machTable.at(key), machTable.at(prev), machAndCheese);
+      }
+      prev = key;
+   }
+   assert(false); // our value is too big
    return 0.3287;
 }
 
@@ -234,9 +296,38 @@ double getTotalXDistanceTraveled(double angle, double velocity)
    
    do 
    {
-      ypos += getYDistanceTraveled(getYVelocity(convertDegreesToRadians(angle), velocity), getYAcceleration(0, weight, convertDegreesToRadians(angle), ypos, velocity, area), .5);
-      xpos += getXDistanceTraveled(getXVelocity(convertDegreesToRadians(angle), velocity), getXAcceleration(0, weight, convertDegreesToRadians(angle), xpos, velocity, area), .5);
-      velocity += computeTotalVelocity(getYAcceleration(0, weight, convertDegreesToRadians(angle), ypos, velocity, area) * 0.5, getXAcceleration(0, weight, convertDegreesToRadians(angle), xpos, velocity, area) * 0.5);
+      ypos += getYDistanceTraveled(
+         getYVelocity(
+            convertDegreesToRadians(angle), 
+            velocity
+         ), 
+         getYAcceleration(
+            0, weight, convertDegreesToRadians(angle), 
+            ypos, velocity, area
+         ), 
+         0.5
+      );
+      xpos += getXDistanceTraveled(
+         getXVelocity(
+            convertDegreesToRadians(angle), 
+            velocity
+         ), 
+         getXAcceleration(
+            0, weight, convertDegreesToRadians(angle), 
+            xpos, velocity, area
+         ), 
+         0.5
+      );
+      velocity += computeTotalVelocity(
+         0.5 * getYAcceleration(
+            0, weight, convertDegreesToRadians(angle), 
+            ypos, velocity, area
+         ), 
+         0.5 * getXAcceleration(
+            0, weight, convertDegreesToRadians(angle), 
+            xpos, velocity, area
+         )
+      );
       seconds += 0.5;
       std::cout << xpos << ", " << ypos << std::endl;
 
@@ -281,8 +372,8 @@ void test_getYDistanceTraveled()
 
 void testAll()
 {
-   test_getTotalDistanceTraveled();
-   test_getYDistanceTraveled();
+   //test_getTotalDistanceTraveled();
+   //test_getYDistanceTraveled();
 }
 
 #endif
