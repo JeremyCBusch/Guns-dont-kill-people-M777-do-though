@@ -4,72 +4,30 @@
 #include <cmath>
 #include <map>
 
-const double weight = 46.7;
-const double area = 0.018842;
+const double mass = 46.7; // kg
+const double area = 0.018842; // m^2
+const double initVelocity = 827.0; // m/s
 
-#define DEBUG
+// Doesn't call other functions
 
-/*
- * Things we will need
- *    acceleration class
- *       - velocity
- *       - time
- *    velocity class
- *       - ddx
- *       - ddy
- *    atmosphere class
- *       - 
- *    projectile class
- *       - altitude
- *       - position
- *       - velocity
- *       - direction
- *       update time()
- *    cannon class
- *       shoot()
- *       aim()
- *    gravity class
- *       update elevation()
- *    speed of sound
- *       update elevation()
- *    drag class
- *       update elevation()
- *    air density
- *       update elevation()
- *       
- */
-
-
-/*
- * COMPUTE TOTAL VELOCITY
- * 
- */
-double computeTotalVelocity(double vVelocity, double hVelocity)
-{
-   return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
-}
-
-
-/*
- * CONVERT DEGREES TO RADIANS
- *
- */
 double convertDegreesToRadians(double degrees)
 {
    const double pi = 3.14159265358979323846;
    return (2 * pi * degrees) / 360;
 }
 
-
-
 double getLinearInterpolation(double v1, double c1, double v0, double c0, double v)
 {
-   if (v1 == v1)
+   if (v1 == v)
       return c1;
    return c0 + ((v - v0) * (c1 - c0)) / (v1 - v0);
 }
 
-double getSpeedOfSound(double altitude)
+// Does call other functions
+
+// Tables -------------------------------------->
+
+double getSoundSpeed(double altitude) // temp
 {
    std::map<double, double> soundSpeedTable({
       { 0.0,      340.0 },
@@ -89,8 +47,10 @@ double getSpeedOfSound(double altitude)
       { 30000.0,	305.0 },
       { 40000.0,	324.0 }
    });
-   double keys[] = {0,1000,2000,3000,4000,5000,6000,7000,
-      8000,9000,10000,15000,20000,25000,30000,40000};
+   if (soundSpeedTable.find(altitude) != soundSpeedTable.end())
+      return soundSpeedTable.at(altitude);
+   double keys[] = { 0,1000,2000,3000,4000,5000,6000,7000,
+      8000,9000,10000,15000,20000,25000,30000,40000 };
    // need to make a map that holds altitude and speed of sound
    double prev = 0.0;
    for (double key : keys)
@@ -103,51 +63,54 @@ double getSpeedOfSound(double altitude)
       }
       prev = key;
    }
-   //assert(false); // our value is too big
    std::cout << "getSpeedOfSound: Altitude is a bit too high" << std::endl;
-
-
+   assert(false); // our value is too big
+      
+      
    return 324.0;
 }
 
-double getGravitationalForce(double altitude)
+double getDragCoefficient(double mach) // temp
 {
-   std::map<double, double> gravityForceTable({
-      { 0,	   9.807 },
-      { 1000,  9.804 },
-      { 2000,  9.801 },
-      { 3000,  9.797 },
-      { 4000,  9.794 },
-      { 5000,  9.791 },
-      { 6000,  9.788 },
-      { 7000,  9.785 },
-      { 8000,  9.782 },
-      { 9000,  9.779 },
-      { 10000, 9.776 },
-      { 15000, 9.761 },
-      { 20000, 9.745 },
-      { 25000, 9.730 }
+   // do linear interpolation on value above the mach and value below the mach
+   std::map<double, double> machTable({
+      { 0.300 , 0.1629 },
+      { 0.500 , 0.1659 },
+      { 0.700 , 0.2031 },
+      { 0.890 , 0.2597 },
+      { 0.920 , 0.3010 },
+      { 0.960 , 0.3287 },
+      { 0.980 , 0.4002 },
+      { 1.000 , 0.4258 },
+      { 1.020 , 0.4335 },
+      { 1.060 , 0.4483 },
+      { 1.240 , 0.4064 },
+      { 1.530 , 0.3663 },
+      { 1.990 , 0.2897 },
+      { 2.870 , 0.2297 },
+      { 2.890 , 0.2306 },
+      { 5.000 , 0.2656 }
    });
-   double keys[] = {0,1000,2000,3000,4000,5000,6000,
-      7000,8000,9000,10000,15000,20000,25000};
-   double prev = 0;
+   if (machTable.find(mach) != machTable.end())
+      return machTable.at(mach);
+   double keys[] = { 0.300,0.500,0.700,0.890,0.920,
+      0.960,0.980,1.000,1.020,1.060,1.240,1.530,
+      1.990,2.870,2.890,5.000 };
+   
+   double prev = 0.300;
    for (double key : keys)
    {
-      if (altitude <= key)
+      if (mach <= key)
       {
-         return -1 * getLinearInterpolation(
-            key, gravityForceTable.at(key), prev,
-            gravityForceTable.at(prev), altitude);
+         return getLinearInterpolation(
+            key, machTable.at(key), prev,
+            machTable.at(prev), mach);
       }
       prev = key;
    }
-   //assert(false); // our value is too big
-   std::cout << "getGravitationalForce: Altitude is a bit too high" << std::endl;
-
-
-
-
-   return -1 * 9.73;
+   std::cout << "getDragCoefficient: Mach is a bit too high" << std::endl;
+   assert(false); // our value is too big
+   return 0.2656;
 }
 
 double getAirDensity(double altitude)
@@ -174,9 +137,11 @@ double getAirDensity(double altitude)
       { 70000,	0.0000828 },
       { 80000,	0.0000185 }
    });
-   double keys[] = {0,1000,2000,3000,4000,5000,6000,
+   if (airDensityTable.find(altitude) != airDensityTable.end())
+      return airDensityTable.at(altitude);
+   double keys[] = { 0,1000,2000,3000,4000,5000,6000,
       7000,8000,9000,10000,15000,20000,25000,30000,
-      40000,50000,60000,70000,80000};
+      40000,50000,60000,70000,80000 };
 
    double prev = 0;
    for (double key : keys)
@@ -189,201 +154,176 @@ double getAirDensity(double altitude)
       }
       prev = key;
    }
-   //assert(false); // our value is too big
    std::cout << "getAirDensity: Altitude is a bit too high" << std::endl;
+   assert(false); // our value is too big
 
    return 0.0000185;
 }
 
-double getDragCoefficient(double machAndCheese)
+double getGravitationalAcceleration(double altitude)
 {
-   std::map<double, double> machTable({
-      { 0.300 , 0.1629 },
-      { 0.500 , 0.1659 },
-      { 0.700 , 0.2031 },
-      { 0.890 , 0.2597 },
-      { 0.920 , 0.3010 },
-      { 0.960 , 0.3287 },
-      { 0.980 , 0.4002 },
-      { 1.000 , 0.4258 },
-      { 1.020 , 0.4335 },
-      { 1.060 , 0.4483 },
-      { 1.240 , 0.4064 },
-      { 1.530 , 0.3663 },
-      { 1.990 , 0.2897 },
-      { 2.870 , 0.2297 },
-      { 2.890 , 0.2306 },
-      { 5.000 , 0.2656 }
+   std::map<double, double> gravityTable({
+      { 0,	   -9.807 },
+      { 1000,  -9.804 },
+      { 2000,  -9.801 },
+      { 3000,  -9.797 },
+      { 4000,  -9.794 },
+      { 5000,  -9.791 },
+      { 6000,  -9.788 },
+      { 7000,  -9.785 },
+      { 8000,  -9.782 },
+      { 9000,  -9.779 },
+      { 10000, -9.776 },
+      { 15000, -9.761 },
+      { 20000, -9.745 },
+      { 25000, -9.730 }
    });
-
-   double keys[] = {0.300,0.500,0.700,0.890,0.920,
-      0.960,0.980,1.000,1.020,1.060,1.240,1.530,
-      1.990,2.870,2.890,5.000};
-
-   double prev = 0.300;
+   if (gravityTable.find(altitude) != gravityTable.end())
+      return gravityTable.at(altitude);
+   double keys[] = { 0,1000,2000,3000,4000,5000,6000,
+      7000,8000,9000,10000,15000,20000,25000 };
+   double prev = 0;
    for (double key : keys)
    {
-      if (machAndCheese <= key)
+      if (altitude <= key)
       {
          return getLinearInterpolation(
-            key, machTable.at(key), prev,
-            machTable.at(prev), machAndCheese);
+            key, gravityTable.at(key), prev,
+            gravityTable.at(prev), altitude);
       }
       prev = key;
    }
-   //assert(false); // our value is too big
-   std::cout << "getDragCoefficient: Mach is a bit too high" << std::endl;
-   return 0.2656;
+   std::cout << "getGravitationalForce: Altitude is a bit too high" << std::endl;
+   assert(false); // our value is too big
+   return -9.73;
 }
+// <---------------------------------------------
 
-double getTheMachAndCheese(double currentSpeed, double altitude) // minus the cheese
+double getMach(double velocity, double altitude)
 {
-   return currentSpeed / getSpeedOfSound(altitude);
-}
-
-double getForceOfAirResistance(double altitude, double velocity, double area)
-{
-   return -1.0 * (0.5 * getDragCoefficient(getTheMachAndCheese(
-      velocity, altitude)) * getAirDensity(altitude) * (velocity * velocity
-   ) * area);
+   // velocity / speed of sound
+   return velocity / getSoundSpeed(altitude);
 }
 
 
-double getXVelocity(double angle, double velocity)
+double getForce(double velocity, double altitude)
 {
-   double xVelocity = 0;
-   // assuming the angle is in radians
-   xVelocity = sin(angle) * velocity;
-   return xVelocity;
+   // 1/2 * coefficient of drag * density of the air * velocity squared * area
+   return 0.5 * getDragCoefficient(getMach(velocity, altitude)) * getAirDensity(altitude) * (velocity * velocity) * area;
 }
 
-double getYVelocity(double angle, double velocity)
+double getAcceleration(double velocity, double altitude, double mass)
 {
-   double yVelocity = 0;
-   // assuming the angle is in radians
-   yVelocity = cos(angle) * velocity;
-   return yVelocity;
+   // force / mass
+   return getForce(velocity, altitude) / mass;
 }
 
-double computeAcceleration(double force, double weight, double gravity = 0.0)
+double getDX(double angle, double velocity)
 {
-   //assert(force > 0.0);
-   //assert(weight > 0.0);
-   double acceleration = force / weight;
-
-
-   assert(gravity <= 0.0);
-   return gravity + acceleration;
+   // sin(angle) * velocity
+   return sin(angle) * velocity;
 }
 
-double getXAcceleration
-(
-   double weight, double angle, double altitude, double totalVelocity, double area
-)
+double getDY(double angle, double velocity)
 {
-   //need to add drag to this
-   double force = getForceOfAirResistance(altitude, totalVelocity, area) * sin(angle);
-   std::cout << "X Air Resistance: " << getForceOfAirResistance(altitude, totalVelocity, area) * sin(angle) << std::endl;
-
-   return computeAcceleration(force, weight); 
+   // cos(angle) * velocity
+   return cos(angle) * velocity;
 }
 
-double getYAcceleration
-(
-   double weight, double angle, double altitude, double totalVelocity, double area
-)
+double getDDX(double angle, double velocity, double altitude, double mass)
 {
-   //need to add drag to this
-   double force = getForceOfAirResistance(altitude, totalVelocity, area) * cos(angle);
-   std::cout << "Y Air Resistance: " << getForceOfAirResistance(altitude, totalVelocity, area) * cos(angle) << std::endl;
-   return computeAcceleration(
-      force, weight, getGravitationalForce(altitude)
-   );
-
+   // -1 * sin(angle) * acceleration
+   return -1 * sin(angle) * getAcceleration(velocity, altitude, mass);
 }
 
-double getDistanceTraveled
-(
-   double velocity, double acceleration, double seconds
-)
+double getDDY(double altitude, double angle, double velocity, double mass)
 {
-   return velocity * seconds + 0.5 * acceleration * (seconds * seconds);
+   // gravitational acceleration - cos(angle) * acceleration
+   return getGravitationalAcceleration(altitude) - cos(angle) * getAcceleration(velocity, altitude, mass);
 }
 
-double getTotalXDistanceTraveled(double angle, double velocity)
+double updateX(double xPos, double angle, double velocity, double time, double altitude, double mass)
 {
-   double xpos = 0.0;
-   double ypos = 0.0;
+   // last position of x + last DX * time + 1/2 DDX * time^2 
+   return xPos + getDX(angle, velocity) * time + 0.5 * getDDX(angle, velocity, altitude, mass) * (time * time);
+}
+
+double updateY(double yPos, double angle, double velocity, double time, double altitude, double mass)
+{
+   // last position of y + last DY * time + 1/2 DDY * time^2
+   return yPos + getDY(angle, velocity) * time + 0.5 * getDDY(altitude, angle, velocity, mass) * (time * time);
+}
+
+double updateDX(double angle, double velocity, double altitude, double mass, double time)
+{
+   // last DX + DDX * time
+   return getDX(angle, velocity) + getDDX(angle, velocity, altitude, mass) * time;
+}
+
+double updateDY(double angle, double velocity, double altitude, double mass, double time)
+{
+   // last DY + DDY * time
+   return getDY(angle, velocity) + getDDY(altitude, angle, velocity, mass) * time;
+}
+
+
+
+
+
+double getTotalXDistanceTraveled(double degAngle, double initVelocity)
+{
+   /*
+    * seconds <-- 0.0
+    * 
+    * radAngle = degToRad(degAngle)
+    * 
+    * xpos <-- 0.0
+    * ypos <-- 0.0
+    * DO
+    *    update velocity
+    *    update angle
+    *    update xpos
+    *    update ypos
+    * WHILE ypos > 0.0
+    */
+   double intervals = 1.0;
+
+   double velocity = initVelocity;
 
    double seconds = 0.0;
 
-   double radAngle = convertDegreesToRadians(angle);
+   double radAngle = convertDegreesToRadians(degAngle);
 
-   double yVelocity = getYVelocity(radAngle, velocity);
-   double xVelocity = getXVelocity(radAngle, velocity);
+   double xPos = 0.0;
+   double yPos = 0.0;
 
-   double totalVelocity;
-   double yAcceleration;
-   double xAcceleration;
+   double prevVelocity;
+   double prevX;
+   double prevY;
 
-   do 
+   double dx;
+   double dy;
+   do
    {
-      totalVelocity = computeTotalVelocity(yVelocity, xVelocity);
-      xAcceleration = getXAcceleration(weight, radAngle, ypos, totalVelocity, area);
-      yAcceleration = getYAcceleration(weight, radAngle, ypos, totalVelocity, area);
+      prevVelocity = velocity;
+      prevX = xPos;
+      prevY = yPos;
 
-      ypos += getDistanceTraveled(yVelocity, yAcceleration, 0.5);
-      xpos += getDistanceTraveled(xVelocity, xAcceleration, 0.5);
-      
-      yVelocity += 0.5 * yAcceleration;
-      xVelocity += 0.5 * xAcceleration;
-      seconds += 0.5;
-      std::cout.precision(6);
-      //std::cout << getDistanceTraveled(yVelocity, yAcceleration, 0.5) << std::endl;
-      std::cout 
-         << seconds << "s Position: ( x: " << xpos << ", y: " << ypos 
-         << " ) xAccel: " << xAcceleration << " yAccel: " << yAcceleration 
-         << " Velocity: " << totalVelocity << " Angle: " << radAngle << std::endl;
+      dx = updateDX(radAngle, prevVelocity, prevY, mass, intervals);
+      dy = updateDY(radAngle, prevVelocity, prevY, mass, intervals);
+      velocity = sqrt(dx * dx + dy * dy);
 
-      radAngle = atan(xVelocity / yVelocity);
-   } while (ypos > 0.0);
-   
-   return xpos;
+      xPos = updateX(prevX, radAngle, prevVelocity, intervals, prevY, mass);
+      yPos = updateY(prevY, radAngle, prevVelocity, intervals, prevY, mass);
+      radAngle = atan(dx / dy);
+      std::cout << seconds << "\tVelocity: " << velocity << "\t( " << xPos << ", " << yPos << " )" << std::endl;
+
+      seconds += intervals;
+   } while (yPos > 0.0);
+   return 0.0;
 }
-
-
-
-
-
-
-
-#ifdef DEBUG
-void test_getTotalDistanceTraveled()
-{
-   std::cout << "test_getTotalDistanceTraveled not yet implemented" << std::endl;
-}
-
-void test_getYDistanceTraveled()
-{
-   // getYDistanceTraveled(double yVelocity, double yAcceleration, double seconds);
-   assert(getDistanceTraveled(0.0, 0.0, 0.0) == 0.0);
-}
-
-void testAll()
-{
-   //test_getTotalDistanceTraveled();
-   //test_getYDistanceTraveled();
-}
-
-#endif
 
 int main()
 {
-#ifdef DEBUG
-   testAll();
-#else
-   std::cout << "Hello Jeremy!" << std::endl;
-   return 0;
-#endif
-   getTotalXDistanceTraveled(30.0, 827);
+   getTotalXDistanceTraveled(30.0, 827.0);
 }

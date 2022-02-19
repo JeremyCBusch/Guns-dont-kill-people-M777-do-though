@@ -144,6 +144,7 @@
     <ClCompile Include="position.cpp" />
     <ClCompile Include="projectile.cpp" />
     <ClCompile Include="source.cpp" />
+    <ClCompile Include="temp.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="uiDraw.cpp" />
     <ClCompile Include="uiInteract.cpp" />
