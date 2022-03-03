@@ -10,6 +10,7 @@
 
 
 #pragma once
+#define DEBUG
 
 #include <iostream>
 
@@ -50,7 +51,9 @@ public:
    }
    double getZoom() const { return metersFromPixels; }
 
+#ifndef DEBUG
 private:
+#endif
    double x;                 // horizontal position
    double y;                 // vertical position
    static double metersFromPixels;

@@ -45,6 +45,21 @@
     <ClCompile Include="temp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="trajectory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="acceleration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="seconds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="force.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ground.h">
@@ -69,6 +84,39 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="projectile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test_Trajectory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trajectory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="acceleration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test_Velocity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test_Mass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test_Seconds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test_Force.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test_Acceleration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="seconds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="force.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
