@@ -1,4 +1,8 @@
 #pragma once
+#include "force.h"
+#include "mass.h"
+#include "acceleration.h"
+#include <cassert>
 
 class TestForce
 {
@@ -8,7 +12,6 @@ public:
 		operatorDivMass_testDivByZero();
 		operatorDivMass_testZeroForcePosMass();
 		operatorDivMass_testZeroForceNegMass();
-		operatorDivMass_testPosForceZeroMass();
 		operatorDivMass_testNegForceZeroMass();
 		operatorDivMass_testNegForcePosMass();
 		operatorDivMass_testPosForceNegMass();
@@ -29,27 +32,316 @@ public:
 		operatorDivAcceleration_testBothZero();
 	}
 private:
-	void operatorDivMass_testDivByZero();
-	void operatorDivMass_testZeroForcePosMass();
-	void operatorDivMass_testZeroForceNegMass();
-	void operatorDivMass_testPosForceZeroMass();
-	void operatorDivMass_testNegForceZeroMass();
-	void operatorDivMass_testNegForcePosMass();
-	void operatorDivMass_testPosForceNegMass();
-	void operatorDivMass_testNegForceNegMass();
-	void operatorDivMass_testPosForcePosMass();
-	void operatorDivMass_testBothZero();
+	void operatorDivMass_testDivByZero()
+	{
+		// setup
+		Force frc;
+		frc.N = 1.0;
+		Mass mass;
+		mass.kgs = 0.0;
+		Acceleration result(0.0);
+		// exercise
+		try
+		{
+			result.totalAccl = frc / mass;
+		}
+		// verify
+		catch (...)
+		{
+			assert(result.totalAccl == 0.0);
+		}
+	}
+
+	void operatorDivMass_testZeroForcePosMass()
+	{
+		// setup
+		Force frc;
+		frc.N = 0.0;
+		Mass mass;
+		mass.kgs = 1.0;
+		Acceleration result(0.0);
+		result.totalAccl = 0.0;
+		// exercise
+		result.totalAccl = frc / mass;
+		// verify
+		assert(result.totalAccl == 0.0);
+	}	//  teardown
+
+	void operatorDivMass_testZeroForceNegMass()
+	{
+		// setup
+		Force frc;
+		frc.N = 0.0;
+		Mass mass;
+		mass.kgs = -1.0;
+		Acceleration result(0.0);
+		result.totalAccl = 0.0;
+		// exercise
+		result.totalAccl = frc / mass;
+		// verify
+		assert(result.totalAccl == 0.0);
+	}	//  teardown
+
+	void operatorDivMass_testNegForceZeroMass()
+	{
+		// setup
+		Force frc;
+		frc.N = -1.0;
+		Mass mass;
+		mass.kgs = 0.0;
+		Acceleration result(0.0);
+		// exercise
+		try
+		{
+			result.totalAccl = frc / mass;
+		}
+		// verify
+		catch (...)
+		{
+			assert(result.totalAccl == 0.0);
+		}
+	}	//  teardown
+
+	void operatorDivMass_testNegForcePosMass()
+	{
+		// setup
+		Force frc;
+		frc.N = -1.0;
+		Mass mass;
+		mass.kgs = 1.0;
+		Acceleration result(0.0);
+		result.totalAccl = 0.0;
+		// exercise
+		result.totalAccl = frc / mass;
+		// verify
+		assert(result.totalAccl == -1.0);
+	}	//  teardown
+
+	void operatorDivMass_testPosForceNegMass()
+	{
+		// setup
+		Force frc;
+		frc.N = 1.0;
+		Mass mass;
+		mass.kgs = -1.0;
+		Acceleration result(0.0);
+		result.totalAccl = 0.0;
+		// exercise
+		result.totalAccl = frc / mass;
+		// verify
+		assert(result.totalAccl == -1.0);
+	}	//  teardown
+
+	void operatorDivMass_testNegForceNegMass()
+	{
+		// setup
+		Force frc;
+		frc.N = -1.0;
+		Mass mass;
+		mass.kgs = -1.0;
+		Acceleration result(0.0);
+		result.totalAccl = 0.0;
+		// exercise
+		result.totalAccl = frc / mass;
+		// verify
+		assert(result.totalAccl == 1.0);
+	}	//  teardown
+
+	void operatorDivMass_testPosForcePosMass()
+	{
+		// setup
+		Force frc;
+		frc.N = 1.0;
+		Mass mass;
+		mass.kgs = 1.0;
+		Acceleration result(0.0);
+		result.totalAccl = 0.0;
+		// exercise
+		result.totalAccl = frc / mass;
+		// verify
+		assert(result.totalAccl == 1.0);
+	}	//  teardown
+
+	void operatorDivMass_testBothZero()
+	{
+		// setup
+		Force frc;
+		frc.N = 0.0;
+		Mass mass;
+		mass.kgs = 0.0;
+		Acceleration result(0.0);
+		// exercise
+		try
+		{
+			result.totalAccl = frc / mass;
+		}
+		// verify
+		catch (...)
+		{
+			assert(result.totalAccl == 0.0);
+		}
+	}	//  teardown
 
 
-	void operatorDivAcceleration_testDivByZero();
-	void operatorDivAcceleration_testDivByZero();
-	void operatorDivAcceleration_testZeroForcePosAcc();
-	void operatorDivAcceleration_testZeroForceNegAcc();
-	void operatorDivAcceleration_testPosForceZeroAcc();
-	void operatorDivAcceleration_testNegForceZeroAcc();
-	void operatorDivAcceleration_testNegForcePosAcc();
-	void operatorDivAcceleration_testPosForceNegAcc();
-	void operatorDivAcceleration_testNegForceNegAcc();
-	void operatorDivAcceleration_testPosForcePosAcc();
-	void operatorDivAcceleration_testBothZero();
+
+
+	// to do ^
+
+
+
+	void operatorDivAcceleration_testDivByZero()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(0.0);
+		frc.N = 0.0;
+		Mass result;
+		//exercise
+		try
+		{
+			result.kgs = frc / accr;
+		}
+		// verify
+		catch (...)
+		{
+			assert(result.kgs == 0.0);
+		}
+	}	//teardown
+
+
+	void operatorDivAcceleration_testZeroForcePosAcc()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(1.0);
+		frc.N = 0.0;
+		Mass result;
+		//exercise
+			result.kgs = frc / accr;
+		// verify
+			assert(result.kgs == 0.0);
+	}	//teardown
+
+	void operatorDivAcceleration_testZeroForceNegAcc()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(-1.0);
+		frc.N = 0.0;
+		Mass result;
+		//exercise
+		result.kgs = frc / accr;
+		// verify
+		assert(result.kgs == 0.0);
+	}	//teardown
+
+	void operatorDivAcceleration_testPosForceZeroAcc()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(0.0);
+		frc.N = 1.0;
+		Mass result;
+		//exercise
+		try
+		{
+			result.kgs = frc / accr;
+		}
+		// verify
+		catch (...)
+		{
+			assert(result.kgs == 0.0);
+		}
+	}	//teardown
+
+	void operatorDivAcceleration_testNegForceZeroAcc()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(0.0);
+		frc.N = -1.0;
+		Mass result;
+		//exercise
+		try
+		{
+			result.kgs = frc / accr;
+		}
+		// verify
+		catch (...)
+		{
+			assert(result.kgs == 0.0);
+		}
+	}	//teardown
+
+	void operatorDivAcceleration_testNegForcePosAcc()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(1.0);
+		frc.N = -1.0;
+		Mass result;
+		//exercise
+		result.kgs = frc / accr;
+		//verify
+		assert(result.kgs == -1.0);
+	}	//teardown
+
+	void operatorDivAcceleration_testPosForceNegAcc()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(-1.0);
+		frc.N = 1.0;
+		Mass result;
+		//exercise
+		result.kgs = frc / accr;
+		//verify
+		assert(result.kgs == -1.0);
+	}	//teardown
+
+	void operatorDivAcceleration_testNegForceNegAcc()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(-1.0);
+		frc.N = -1.0;
+		Mass result;
+		//exercise
+		result.kgs = frc / accr;
+		//verify
+		assert(result.kgs == 1.0);
+	}	//teardown
+
+	void operatorDivAcceleration_testPosForcePosAcc()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(1.0);
+		frc.N = 1.0;
+		Mass result;
+		//exercise
+		result.kgs = frc / accr;
+		//verify
+		assert(result.kgs == 1.0);
+	}	//teardown
+
+	void operatorDivAcceleration_testBothZero()
+	{
+		//setup
+		Force frc;
+		Acceleration accr(0.0);
+		frc.N = 0.0;
+		Mass result;
+		//exercise
+		try
+		{
+			result.kgs = frc / accr;
+		}
+		// verify
+		catch (...)
+		{
+			assert(result.kgs == 0.0);
+		}
+	}	//teardown
+
 };
