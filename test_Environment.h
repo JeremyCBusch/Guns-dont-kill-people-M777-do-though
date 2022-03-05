@@ -1,7 +1,8 @@
-#pragma once
+﻿#pragma once
 
 #include "environment.h"
 #include <cassert>
+#include "Spies.h"
 
 class TestEnvironment
 {
@@ -525,30 +526,329 @@ private:
 	// bellow this is jacobs work
 
 
-	void getForceOfAirResistance_testPosVelocityPosAltitude();
-	void getForceOfAirResistance_testZeroVelocityPosAltitude();
-	void getForceOfAirResistance_testNegVelocityPosAltitude();
-	void getForceOfAirResistance_testPosVelocZeroAltitude();
-	void getForceOfAirResistance_testZeroVelocityZeroAltitude();
-	void getForceOfAirResistance_testNegVelocityZeroAltitude();
-	void getForceOfAirResistance_testPosVelocityNegAltitude();
-	void getForceOfAirResistance_testZeroVelocityNegAltitude();
-	void getForceOfAirResistance_testNegVelocityNegAltitude();
-	void getForceOfAirResistance_testSuperHighAltitude();
-	void getForceOfAirResistance_testSuperHighVelocity();
+	void getForceOfAirResistance_testPosVelocityPosAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = /*vertical component of velocity resulting in total velocity of 340 m/s*/;
+		spy.vel.dy = /*horizontal component of velocity resulting in total velocity of 340 m/s*/;
+		spy.altitude = 1000.0;
+		env.projectile = spy;
+		// exercise
+		double drag = getForcOfAirResistance();
+		// verify
+		assert(drag == /*d = ½ c ρ v2 a*/);
+	}  // teardown
+	void getForceOfAirResistance_testZeroVelocityPosAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = 0.0;
+		spy.vel.dy = 0.0;
+		spy.altitude = 1000.0;
+		env.projectile = spy;
+		// exercise
+		double drag = getForcOfAirResistance();
+		// verify
+		assert(drag == /*d = ½ c ρ v2 a*/);
+	}  // teardown
+	void getForceOfAirResistance_testNegVelocityPosAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = -/*vertical component of velocity resulting in total velocity of -340 m/s*/;
+		spy.vel.dy = -/*horizontal component of velocity resulting in total velocity of -340 m/s*/;
+		spy.altitude = 1000.0;
+		env.projectile = spy;
+		// exercise
+		double drag = getForcOfAirResistance();
+		// verify
+		assert(drag == /*d = ½ c ρ v2 a*/);
+	}  // teardown
+	void getForceOfAirResistance_testPosVelocZeroAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = /*vertical component of velocity resulting in total velocity of 340 m/s*/;
+		spy.vel.dy = /*horizontal component of velocity resulting in total velocity of 340 m/s*/;
+		spy.altitude = 0.0;
+		env.projectile = spy;
+		// exercise
+		double drag = getForcOfAirResistance();
+		// verify
+		assert(drag == /*d = ½ c ρ v2 a*/);
+	}  // teardown
+	void getForceOfAirResistance_testZeroVelocityZeroAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = 0.0;
+		spy.vel.dy = 0.0;
+		spy.altitude = 0.0;
+		env.projectile = spy;
+		// exercise
+		double drag = getForcOfAirResistance();
+		// verify
+		assert(drag == 0);
+	}  // teardown
+	void getForceOfAirResistance_testNegVelocityZeroAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = -/*vertical component of velocity resulting in total velocity of -340 m/s*/;
+		spy.vel.dy = -/*horizontal component of velocity resulting in total velocity of -340 m/s*/;
+		spy.altitude = 0.0;
+		env.projectile = spy;
+		// exercise
+		double drag = getForcOfAirResistance();
+		// verify
+		assert(drag == /*d = ½ c ρ v2 a*/);
+	}  // teardown
+	void getForceOfAirResistance_testPosVelocityNegAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = /*vertical component of velocity resulting in total velocity of 340 m/s*/;
+		spy.vel.dy = /*horizontal component of velocity resulting in total velocity of 340 m/s*/;
+		spy.altitude = -1.0;
+		env.projectile = spy;
+		// exercise
+		try {
+			double drag = getForcOfAirResistance();
+			// verify
+			assert(false);
+		}
+		catch (...) {}
+	}  // teardown
+	void getForceOfAirResistance_testZeroVelocityNegAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = 0.0;
+		spy.vel.dy = 0.0;
+		spy.altitude = -1.0;
+		env.projectile = spy;
+		// exercise
+		try {
+			double drag = getForcOfAirResistance();
+			// verify
+			assert(false);
+		}
+		catch (...) {}
+	}  // teardown
+	void getForceOfAirResistance_testNegVelocityNegAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = -/*vertical component of velocity resulting in total velocity of -340 m/s*/;
+		spy.vel.dy = -/*horizontal component of velocity resulting in total velocity of -340 m/s*/;
+		spy.altitude = -1.0;
+		env.projectile = spy;
+		// exercise
+		try {
+			double drag = getForcOfAirResistance();
+			// verify
+			assert(false);
+		}
+		catch (...) {}
+	}  // teardown
+	void getForceOfAirResistance_testSuperHighAltitude()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = 0;
+		spy.vel.dy = 0;
+		spy.altitude = 10000000000.0;
+		env.projectile = spy;
+		// exercise
+		try {
+			double drag = getForcOfAirResistance();
+			// verify
+			assert(false);
+		}
+		catch (...) {}
+	}  // teardown
+	void getForceOfAirResistance_testSuperHighVelocity()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = /*vertical component of velocity resulting in total velocity of 10000000000.0 m/s*/;
+		spy.vel.dy = /*horizontal component of velocity resulting in total velocity of 10000000000.0 m/s*/;
+		spy.altitude = 0.0;
+		env.projectile = spy;
+		// exercise
+		double drag = getForcOfAirResistance();
+		// verify
+		assert(drag == /*d = ½ c ρ v2 a*/);
+	}  // teardown
 
 
-	void getMach_testVelocityIsNeg();
-	void getMach_testVelocityIsPos();
-	void getMach_testVelocityIsZero();
+	void getMach_testVelocityIsNeg()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = -/*vertical component of velocity resulting in total velocity of -340 m/s*/;
+		spy.vel.dy = -/*horizontal component of velocity resulting in total velocity of -340 m/s*/;
+		spy.altitude = 0.0;
+		env.projectile = spy;
+		// exercise
+		double mach = env.getMach();
+		// verify
+		mach = 1;
+	}  // teardown
+	void getMach_testVelocityIsPos()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = /*vertical component of velocity resulting in total velocity of 340 m/s*/;
+		spy.vel.dy = /*horizontal component of velocity resulting in total velocity of 340 m/s*/;
+		env.projectile = spy;
+		// exercise
+		double mach = env.getMach();
+		// verify
+		mach = 1;
+	}  // teardown
+	void getMach_testVelocityIsZero()
+	{
+		// setup
+		Environment env;
+		env.isProjFired = true;
+		ProjectileSpy spy;
+		spy.vel.dx = 0;
+		spy.vel.dy = 0;
+		env.projectile = spy;
+		// exercise
+		double mach = env.getMach();
+		// verify
+		mach = 0;
+	}  // teardown
 
 
-	void update_testProjectileFired();
-	void update_testProjectileUnfired(); 
+	void update_testProjectileFired()
+	{
+		// setup
+		Environment env;
+		env.howitzer = HowitzerSpy();
+		env.ground = GroundSpy();
+		env.projectile = ProjectileSpy();
+		HowitzerSpy::resetStatistics();
+		GroundSpy::resetStatistics();
+		ProjectileSpy::resetStatistics();
+
+		env.isProjFired = true;
+		// exercise
+		env.update();
+		// verify
+		assert(HowitzerSpy::numDrawCalls == 0);
+		assert(GroundSpy::numDrawCalls == 0);
+		assert(ProjectileSpy::numDrawCalls == 0);
+		assert(HowitzerSpy::numResetCalls == 0);
+		assert(GroundSpy::numResetCalls == 0);
+		assert(ProjectileSpy::numResetCalls == 0);
+		assert(HowitzerSpy::numUpdateCalls == 1);
+		assert(GroundSpy::numUpdateCalls == 1);
+		assert(ProjectileSpy::numUpdateCalls == 1);
+	}  // teardown
+
+	void update_testProjectileUnfired()
+	{
+		// setup
+		Environment env;
+		env.howitzer = HowitzerSpy();
+		env.ground = GroundSpy();
+		env.projectile = ProjectileSpy();
+		HowitzerSpy::resetStatistics();
+		GroundSpy::resetStatistics();
+		ProjectileSpy::resetStatistics();
+
+		env.isProjFired = false;
+		// exercise
+		env.update();
+		// verify
+		assert(HowitzerSpy::numDrawCalls == 0);
+		assert(GroundSpy::numDrawCalls == 0);
+		assert(ProjectileSpy::numDrawCalls == 0);
+		assert(HowitzerSpy::numResetCalls == 0);
+		assert(GroundSpy::numResetCalls == 0);
+		assert(ProjectileSpy::numResetCalls == 0);
+		assert(HowitzerSpy::numUpdateCalls == 1);
+		assert(GroundSpy::numUpdateCalls == 1);
+		assert(ProjectileSpy::numUpdateCalls == 0);
+	}  // teardown
 
 
-	void reset_test();
+	void reset_test()
+	{
+		// setup
+		Environment env;
+		env.howitzer = HowitzerSpy();
+		env.ground = GroundSpy();
+		env.projectile = ProjectileSpy();
+		HowitzerSpy::resetStatistics();
+		GroundSpy::resetStatistics();
+		ProjectileSpy::resetStatistics();
+		// exercise
+		env.reset();
+		// verify
+		assert(HowitzerSpy::numDrawCalls == 0);
+		assert(GroundSpy::numDrawCalls == 0);
+		assert(ProjectileSpy::numDrawCalls == 0);
+		assert(HowitzerSpy::numResetCalls == 1);
+		assert(GroundSpy::numResetCalls == 1);
+		assert(ProjectileSpy::numResetCalls == 1);
+		assert(HowitzerSpy::numUpdateCalls == 0);
+		assert(GroundSpy::numUpdateCalls == 0);
+		assert(ProjectileSpy::numUpdateCalls == 0);
+	}  // teardown
 
 
-	void draw_test();
+	void draw_test()
+	{
+		// setup
+		Environment env;
+		env.howitzer = HowitzerSpy();
+		env.ground = GroundSpy();
+		env.projectile = ProjectileSpy();
+		HowitzerSpy::resetStatistics();
+		GroundSpy::resetStatistics();
+		ProjectileSpy::resetStatistics();
+		// exercise
+		env.draw();
+		// verify
+		assert(HowitzerSpy::numDrawCalls == 1);
+		assert(GroundSpy::numDrawCalls == 1);
+		assert(ProjectileSpy::numDrawCalls == 1);
+		assert(HowitzerSpy::numResetCalls == 0);
+		assert(GroundSpy::numResetCalls == 0);
+		assert(ProjectileSpy::numResetCalls == 0);
+		assert(HowitzerSpy::numUpdateCalls == 0);
+		assert(GroundSpy::numUpdateCalls == 0);
+		assert(ProjectileSpy::numUpdateCalls == 0);
+	}  // teardown
 };
