@@ -60,6 +60,9 @@
     <ClCompile Include="force.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_Environment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ground.h">
@@ -123,6 +126,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="test_Environment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Spies.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
