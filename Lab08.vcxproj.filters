@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Default Header Files">
+      <UniqueIdentifier>{d01ed480-dbcb-40b2-bc17-46f3841e66a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Default Source Files">
+      <UniqueIdentifier>{1b7e388c-7a0a-4c29-ac1c-cc2c8e9cfbc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Program Control Files">
+      <UniqueIdentifier>{96a8965a-1648-4238-b8fc-96f797dc7541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Test Files">
+      <UniqueIdentifier>{714ce78a-9d0b-46fe-8e69-4214c3933ac6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ground.cpp">
+      <Filter>Default Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="position.cpp">
+      <Filter>Default Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="uiDraw.cpp">
+      <Filter>Default Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="uiInteract.cpp">
+      <Filter>Default Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Program Control Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lab08.cpp">
+      <Filter>Program Control Files</Filter>
+    </ClCompile>
+    <ClCompile Include="howitzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="userInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trajectory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="seconds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="acceleration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="velocity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="projectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ground.h">
+      <Filter>Default Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="position.h">
+      <Filter>Default Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uiDraw.h">
+      <Filter>Default Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uiInteract.h">
+      <Filter>Default Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test.h">
+      <Filter>Program Control Files</Filter>
+    </ClInclude>
+    <ClInclude Include="testPosition.h">
+      <Filter>Test Files</Filter>
+    </ClInclude>
+    <ClInclude Include="howitzer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="userInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trajectory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="seconds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="acceleration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="velocity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="projectile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tempMath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
