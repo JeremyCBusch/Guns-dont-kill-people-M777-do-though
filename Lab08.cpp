@@ -19,11 +19,13 @@
 #include "position.h"   // for POINT
 #include "howitzer.h"
 #include "projectile.h"
+#include "simulator.h"
 
 using namespace std;
 
 const int SCREEN_HEIGHT = 800;
 const int SCREEN_WIDTH = 1000;
+const float FPS = 1.0 / 1.0;
 
 /*************************************************************************
  * Demo
@@ -67,7 +69,8 @@ void callBack(const Interface* pUI, void* p)
 {
    // the first step is to cast the void pointer into a game object. This
    // is the first step of every single callback function in OpenGL. 
-   Demo* pDemo = (Demo*)p;
+   //Demo* pDemo = (Demo*)p;
+   Simulator* sim = (Simulator*)p;
 
    //
    // accept input
@@ -97,8 +100,8 @@ void callBack(const Interface* pUI, void* p)
    //
    // draw everything
    //
-
-   ogstream gout(Position(10.0, pDemo->ptUpperRight.getPixelsY() - 20.0));
+   sim->update();
+   sim->draw();
 
    // draw the ground first
    pDemo->ground.draw(gout);
@@ -146,10 +149,10 @@ int main(int argc, char** argv)
       ptUpperRight);
 
    // Initialize the demo
-   Demo demo(ptUpperRight);
+   Simulator sim(ptUpperRight, FPS);
 
    // set everything into action
-   ui.run(callBack, &demo);
+   ui.run(callBack, &sim);
 
 
    return 0;
